@@ -12,6 +12,12 @@ function! RunTestTool(tool_cmd)
   let foo = system(applescript)
 endfunction
 
+function! ShowVisor()
+  let dir = system('pwd')
+  let applescript = "osascript -e 'tell application \"Terminal\" to activate'"
+  let foo = system(applescript)
+endfunction
+
 " If the file ends with _spec.rb, RunTestTool with rspec
 " If the file ends with .feature, RunTestTool with cuke
 command! RunFocusedTest :call RunFocusedTest()
@@ -26,6 +32,7 @@ function! RunFocusedTest()
   endif
 endfunction
 
+nmap <leader>t :RunTests<cr>
 command! RunTests :call RunTests()
 function! RunTests()
   let spec_command = system('if [ x != "x"$(which spec) ] ; then echo -n spec ; elif [ x != "x"$(which rspec) ] ; then echo -n rspec ; fi')
@@ -36,4 +43,6 @@ function! RunTests()
   if filename =~ '\.feature$'
     call RunTestTool("cuke ".expand("%"))
   endif
+  call ShowVisor()
 endfunction
+
