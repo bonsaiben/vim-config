@@ -20,29 +20,40 @@ endfunction
 
 " If the file ends with _spec.rb, RunTestTool with rspec
 " If the file ends with .feature, RunTestTool with cuke
-command! RunFocusedTest :call RunFocusedTest()
 function! RunFocusedTest()
-  let spec_command = system('if [ x != "x"$(which spec) ] ; then echo -n spec ; elif [ x != "x"$(which rspec) ] ; then echo -n rspec ; fi')
+  "let spec_command = system('if [ x != "x"$(which spec) ] ; then echo -n spec ; elif [ x != "x"$(which rspec) ] ; then echo -n rspec ; fi')
+  let spec_command = "bin/rspec"
   let filename = expand("%")
   if filename =~ '_spec\.rb$'
-    call RunTestTool("be ".spec_command." ".expand("%").":".line("."))
+    call RunTestTool(spec_command." ".expand("%").":".line("."))
   endif
   if filename =~ '\.feature$'
     call RunTestTool("cuke ".expand("%").":".line("."))
   endif
+  call ShowVisor()
 endfunction
+command! RunFocusedTest :call RunFocusedTest()
+nmap <leader>tl :RunFocusedTest<cr>
 
-nmap <leader>t :RunTests<cr>
-command! RunTests :call RunTests()
 function! RunTests()
-  let spec_command = system('if [ x != "x"$(which spec) ] ; then echo -n spec ; elif [ x != "x"$(which rspec) ] ; then echo -n rspec ; fi')
+  "let spec_command = system('if [ x != "x"$(which spec) ] ; then echo -n spec ; elif [ x != "x"$(which rspec) ] ; then echo -n rspec ; fi')
+  let spec_command = "bin/rspec"
   let filename = expand("%")
   if filename =~ '_spec\.rb$'
-    call RunTestTool("be ".spec_command." ".expand("%"))
+    call RunTestTool(spec_command." ".expand("%"))
   endif
   if filename =~ '\.feature$'
     call RunTestTool("cuke ".expand("%"))
   endif
   call ShowVisor()
 endfunction
+command! RunTests :call RunTests()
+nmap <leader>tf :RunTests<cr>
 
+function! RunAllTests()
+  let spec_command = "bin/rspec"
+  call RunTestTool(spec_command)
+  call ShowVisor()
+endfunction
+command! RunAllTests :call RunAllTests()
+nmap <leader>tt :RunAllTests<cr>
